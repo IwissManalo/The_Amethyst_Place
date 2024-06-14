@@ -1,0 +1,53 @@
+CREATE TABLE Guests (
+    GuestID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL, 
+    username VARCHAR(50) NOT NULL UNIQUE,
+    contact_number VARCHAR(11) NOT NULL
+);
+
+CREATE TABLE Room_Types (
+    RoomTypeID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    type_name VARCHAR(50) NOT NULL,
+    amenities VARCHAR(50) NOT NULL,
+    occupancy INT NOT NULL
+);
+
+CREATE TABLE Rooms (
+    RoomID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    room_number INT NOT NULL,
+    room_type_id INT NOT NULL,
+    FOREIGN KEY (room_type_id) REFERENCES Room_Types(RoomTypeID)
+);
+
+CREATE TABLE Reservations (
+    ReservationID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    guest_id INT NOT NULL,
+    room_id INT NOT NULL,
+    check_in_date DATE NOT NULL,
+    check_out_date DATE NOT NULL,
+    total_cost DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (guest_id) REFERENCES Guests(GuestID),
+    FOREIGN KEY (room_id) REFERENCES Rooms(RoomID)
+);
+
+CREATE TABLE Reviews (
+    ReviewID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    reservation_id INT NOT NULL,
+    room_id INT NOT NULL, 
+    rating ENUM ('1', '2', '3', '4', '5') NOT NULL,
+    feedback VARCHAR(255),
+    FOREIGN KEY (reservation_id) REFERENCES Reservations(ReservationID),
+    FOREIGN KEY (room_id) REFERENCES Rooms(RoomID)
+);
+
+CREATE TABLE Payments (
+    PaymentID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    reservation_id INT NOT NULL,
+    payment_date DATE NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    FOREIGN KEY (reservation_id) REFERENCES Reservations(ReservationID)
+);
